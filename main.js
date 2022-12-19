@@ -3,31 +3,56 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth - 100;
-canvas.height = window.innerHeight - 100;
+// canvas.width = window.innerWidth - 100;
+// canvas.height = window.innerHeight - 100;
+canvas.width = 600;
+canvas.height = 300;
 
-// 캐릭터 속성 object 자료에 정리해두면 편리
-var dino = {
-    x : 50,
-    y : 200,
-    width : 10,
-    height : 50,
-    draw(){
-        ctx.fillStyle = 'green'; // 이미지가 들어가면 이게 히트박스(실체)
-         ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.drawImage(img1, this.x-17, this.y, 50, 50) // 이미지 넣기
-    }
-}
+// 필요 이미지 선언
+var backgroundImg = new Image();
+backgroundImg.src = './img/background.jpg'
+
+var cloud1 = new Image();
+cloud1.src = './img/cloud1.png';
+
+var cloud2 = new Image();
+cloud2.src = './img/cloud2.png';
 
 var img1 = new Image();
-img1.src = './img/dinosaur.png'
-console.log(img1.height);
+var src1 = './img/dino1.png'
+var src2 = './img/dino2.png'
+img1.src = src1
 
 var img2 = new Image();
 img2.src = './img/cactus.png';
 
 
-// 장애물 만들기
+// 요소 속성 정의
+
+var background = {
+    x:0,
+    y:0,
+    width : 550,
+    height : 300,
+    draw(){
+        ctx.drawImage(backgroundImg, this.x, this.y, this.width, this.height);
+    }
+}
+
+var dino = {
+    x : 50,
+    y : 200,
+    width : 20,
+    height : 50,
+    draw(){
+        ctx.fillStyle = 'green'; // 이미지가 들어가면 이게 히트박스(실체)
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(img1, this.x-13, this.y, 50, 50) // 이미지 넣기
+    }
+}
+
+
+// 장애물 
 // 장애물 역시 속성 먼저 정리해두면 편리
 // but 장애물마다 속성 다를 수 있음
 // class로 만들어두자!!
@@ -44,9 +69,37 @@ class Cactus {
         ctx.drawImage(img2, this.x-4, this.y, 30, 50) // 이미지 넣기
     }
 }
-var cactus = new Cactus();
-cactus.draw();
+// var cactus = new Cactus();
+// cactus.draw();
 
+
+// 구름
+class Cloud1 {
+    constructor(){
+        this.x = 600;
+        this.y = 50;
+        this.width = 50;
+        this.height = 50;
+    }
+    draw(){
+        ctx.fillStyle = 'red';
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(cloud1, this.x-4, this.y, 50, 50)
+    }
+}
+class Cloud2 {
+    constructor(){
+        this.x = 600;
+        this.y = 80;
+        this.width = 50;
+        this.height = 50;
+    }
+    draw(){
+        ctx.fillStyle = 'red';
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(cloud2, this.x-4, this.y, 50, 50)
+    }
+}
 
 
 
@@ -54,8 +107,11 @@ cactus.draw();
 
 var timer = 0;
 var cactusArr = []; // 장애물 여러개 관리하려면 배열로 관리해보쟈
+var cloud1Arr = [];
+var cloud2Arr = [];
 var jumpTimer = 0; // 점프 후 n프레임이 지나면 다시 내려오게 하기위한 변수
 var animation;
+
 
 function frameWork(){
     animation = requestAnimationFrame(frameWork) // 웹브라우저 기본기능
@@ -63,10 +119,45 @@ function frameWork(){
     // 모니터 환경과 무관하게 모두 60프레임 등으로 고정하는법은 구글링 해보쟈 
     timer++; // 프레임마다 1씩 올라감
 
+
     ctx.clearRect(0,0,canvas.width, canvas.height);
     // 매번 지우고 새로 생성하지 않으면 잔상이 계속 남는다!
 
-    if(timer%150 === 0){  // 120 프레임마다 실행
+
+    // 🟥
+    background.x--;
+    background.draw();
+
+
+    // cloud
+    if(timer%150 === 0){
+        var cloud1 = new Cloud1();
+        cloud1Arr.push(cloud1);
+    }
+    cloud1Arr.forEach((a, i, o)=>{
+        if(a.x < 0){
+            o.splice(i,1)
+        }
+        a.x-=2 ;
+        a.draw();
+    })
+    if(timer%250 === 0){
+        var cloud2 = new Cloud2();
+        cloud2Arr.push(cloud2);
+    }
+    cloud2Arr.forEach((a, i, o)=>{
+        if(a.x < 0){
+            o.splice(i,1)
+        }
+        a.x-=2 ;
+
+        a.draw();
+    })
+    
+
+
+
+    if(timer%150 === 0){  // 정해진 프레임마다 실행
         var cactus = new Cactus();
         cactusArr.push(cactus);
     }
@@ -80,7 +171,6 @@ function frameWork(){
 
         // 충돌 체크
         collisionDetect(dino, a)
-
         a.draw();
     })
 
@@ -98,7 +188,10 @@ function frameWork(){
         jump = false;  // 점프 false
         jumpTimer = 0;
     }
+
     dino.draw();
+
+    
     
     
 }
@@ -107,7 +200,7 @@ frameWork();
 
 // 충돌확인
 function collisionDetect(dino, cactus){
-    var xMinus = (cactus.x) - (dino.x+ dino.width);
+    var xMinus = cactus.x - (dino.x+ dino.width);
     var yMinus = cactus.y - (dino.y + dino.height);
     if(xMinus < 0 && yMinus < 0){ // 충돌
         // 게임정지
@@ -122,7 +215,7 @@ function collisionDetect(dino, cactus){
 // 스페이스바 누르면 점프
 var jump = false;
 document.addEventListener('keydown', function(e){
-    if(e.code === 'Space'){
+    if(e.code === 'Space' && dino.y == 200){ // 공중에서 떨어지는 도중 다시 점프가 가능한 현상 제거
         jump = true;
     }
 })
