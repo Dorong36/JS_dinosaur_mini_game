@@ -6,31 +6,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        #gameArea {
-            background-image: url(./img/background.jpg);
-            background-size: cover;
+        @import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
+        * {
+            font-family: 'Michroma', sans-serif;
         }
+        #gameArea {
+            margin-top: 150px;
+        }
+        #titleName {
+            margin: 0 auto;
+            width: 600px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: xx-large;
+        }
+        #score-container {
+            margin: 0 auto;
+            width: 600px;
+        }
+        #game-container {
+            margin: 0 auto;
+            border: 1px solid;
+            border-radius: 10px;
+            width: 600px;
+            height: 300px;
+        }
+        #button-container {
+            margin: 0 auto;
+            width: 600px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        button {
+            width: 100px;
+            height: 50px;
+            margin: 5px;
+            font-size: medium;
+        }
+        
     </style>
 </head>
 <body>
+
 
     <!-- 
         게임 만들기 알아야할 것
         1. 화면에 네모, 원 그릴 수 있어야함 => by canvas
         2. 프레임마다 코드실행 가능해야(애니메이션 위해)
         3. collision check 할 수 있어야함(충돌 감지)
-     -->
+    -->
 
+    <div id="gameArea">
+        <div id="titleName">
+            <span>Jumping Dinosaur</span> 
+        </div>
+    
+        <div id="game-container">
+            <canvas id="canvas"></canvas>
+        </div>
+        <br>
+        <div id="button-container">
+            <button id="startButton">Start</button>
+            <button id="retryButton" disabled >Retry</button>
+        </div>
+    </div>
 
-     <!-- <div id="gameArea">
-         <canvas id="canvas"></canvas>
-     </div> -->
-
-    <canvas id="canvas"></canvas>
+    
+     
     
 
     
-    <script src="./main.js"></script>
+    <script src="./js/main.js"></script>
 
 </body>
 </html>
