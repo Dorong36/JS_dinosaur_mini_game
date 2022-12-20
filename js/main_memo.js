@@ -256,9 +256,10 @@ retry.addEventListener('click', function(){
 
 // 충돌확인
 function collisionDetect(dino, cactus){
-    var xMinus = cactus.x - (dino.x+ dino.width);
-    var yMinus = cactus.y - (dino.y + dino.height);
-    if(xMinus < 0 && yMinus < 0){ // 충돌
+    var xFrontMinus = cactus.x - (dino.x+ dino.width);  // 장애물 왼쪽 x좌표가 공룡 오른쪽 x좌표보다 작으면 충돌
+    var xBackMinus = (cactus.x + cactus.width) - dino.x; // 그런데 장애물 오른쪽 x좌표가 공룡 왼쪽 x좌표보다 작아지면 충돌이 아님
+    var yMinus = cactus.y - (dino.y + dino.height);  // 장애물 위쪽 y좌표가 공룡 아래쪽 y좌표보다 작아지면 충돌
+    if(xFrontMinus < 0 && yMinus < 0 && xBackMinus > 0){ // 충돌
         // 게임정지
         // ctx.clearRect(0,0, canvas.width, canvas.height); // 캔버스 클리어
 

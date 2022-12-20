@@ -206,9 +206,10 @@ retry.addEventListener('click', function(){
 
 // Collision detect
 function collisionDetect(dino, cactus){
-    var xMinus = cactus.x - (dino.x+ dino.width);
+    var xFrontMinus = cactus.x - (dino.x+ dino.width);
+    var xBackMinus = (cactus.x + cactus.width) - dino.x;
     var yMinus = cactus.y - (dino.y + dino.height);
-    if(xMinus < 0 && yMinus < 0){
+    if(xFrontMinus < 0 && yMinus < 0 && xBackMinus > 0){
         ctx.font = "25px 'Michroma', sans-serif";
         ctx.fillText(`Game Over`, 210, 283)   
         cancelAnimationFrame(animation);

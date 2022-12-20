@@ -41,6 +41,8 @@ var dino = {
     width : 30,
     height : 50,
     draw(num = 1){
+        ctx.fillStyle = 'green';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.drawImage(dinosaurArr[num], this.x-8, this.y, 50, 50)
     }
 }
@@ -57,6 +59,8 @@ class Cactus extends Materials{
         super(600, 200, 20, 50);
     }
     draw(){
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.drawImage(cactusImg, this.x-4, this.y, 30, 50)
     }
 }
@@ -99,6 +103,13 @@ var scoreCount = 0;
 
 // ✅ Framework ✅
 function frameWork(){
+
+    // 프레임 일정하게 => 오류
+    // var fps = 15;
+    // animation = setInterval(function(){
+    //     requestAnimationFrame(frameWork)
+    // }, 1000 / fps)
+
     animation = requestAnimationFrame(frameWork)
     timer++;
     if(timer %10 == 0){
@@ -125,7 +136,7 @@ function frameWork(){
         cactusArr.push(cactus);
     }
     cactusArr.forEach((a, i, o)=>{
-        if(a.x+a.width < 40){
+        if(a.x < 10){ // 40
             o.splice(i,1)
         }
         a.x-=5 ;
@@ -173,9 +184,10 @@ retry.addEventListener('click', function(){
 
 // Collision detect
 function collisionDetect(dino, cactus){
-    var xMinus = cactus.x - (dino.x+ dino.width);
+    var xFrontMinus = cactus.x - (dino.x+ dino.width);
+    var xBackMinus = (cactus.x + cactus.width) - dino.x;
     var yMinus = cactus.y - (dino.y + dino.height);
-    if(xMinus < 0 && yMinus < 0){
+    if(xFrontMinus < 0 && yMinus < 0 && xBackMinus > 0){
         ctx.font = "25px 'Michroma', sans-serif";
         ctx.fillText(`Game Over`, 210, 283)   
         cancelAnimationFrame(animation);
